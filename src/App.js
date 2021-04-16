@@ -1,34 +1,55 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 
 import LanguageContext from './contexts/LanguageContext';
 import Form from './Form';
+import { theme } from "./theme";
+import { ThemeContext } from "./contexts/ThemeContextProvider";
+import ThemeSwitch from "./ThemeSwitch";
 
-class App extends React.Component {
-  state = { language: 'english' }
-
-  onLanguageChange = lang => {
-    this.setState({ language: lang })
+const getStyles = (mode) => ({
+  app: {
+    height: "100vh",
+    width: "100%",
+    padding: 16,
+    backgroundColor: theme[mode].backgroundColor
+  },
+  text: {
+    color: theme[mode].color
+  },
+  theme: {
+    color: theme[mode].highlight
   }
+});
 
-  render() {
-    return (
+const App = () => {
+
+  const [ language, setLanguage ] = useState('english')
+
+  const { mode } = useContext(ThemeContext);
+  const styles = getStyles(mode);
+
+  return (
+    <div style={styles.app}>
       <div className="ui container">
         <div>
-          Select a language: 
-          <button className="ui button" onClick={() => this.onLanguageChange('english')}>
+          <h2 style={(styles.text)}>Select a language: </h2>
+          <button className="ui button" onClick={() => setLanguage('english')}>
             English
           </button>
-          <div className="ui button" onClick={() => this.onLanguageChange('hindi')}>
+          <button className="ui button" onClick={() => setLanguage('hindi')}>
             Hindi
-          </div>
+          </button>
           <br />
-          <LanguageContext.Provider value={this.state.language}>
+          <LanguageContext.Provider value={language}>
+            {/* The Provider property is nothing but a React component */}
             <Form />
           </LanguageContext.Provider>
         </div>
+        <ThemeSwitch />
       </div>
-    );
-  }
+    </div>
+    
+  );
 }
 
 export default App;
